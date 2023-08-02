@@ -1,0 +1,71 @@
+- name: Install Trellis on Debian x86
+  hosts: localhost
+  become: yes
+  vars:
+    go_version: "1.17.3"
+    cmake_version: "3.22.0-rc2"
+    trellis_repo: "git@github.com:SimonLangowski/trellis"
+    gcc_version: "10"
+  tasks:
+    - name: Install required dependencies
+      apt:
+        name:
+          - git
+          - gcc-{{ gcc_version }}
+          - g++-{{ gcc_version }}
+          - cmake
+          - libgmp-dev
+          - libssl-dev
+        state: present
+
+    - name: Download and install Go
+      shell:
+        cmd: |
+          wget https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
+          tar -C /usr/local -xzf go{{ go_version }}.linux-amd64.tar.gz
+          rm go{{ go_version }}.linux-amd64.tar.gz
+      args:
+        creates: /usr/local/go
+
+    - name: Download and install CMake
+      shell:
+        cmd: |
+          wget https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/cmake-{{ cmake_version }}-linux-x86_64.tar.gz
+          tar -C /usr/local -xzf cmake-{{ cmake_version }}-linux-x86_64.tar.gz
+          rm cmake-{{ cmake_version }}-linux-x86_64.tar.gz
+      args:
+        creates: /usr/local/cmake-{{ cmake_version }}-linux-x86_64
+
+    - name: Clone the Trellis repository
+      git:
+        repo: "{{ trellis_repo }}"
+        dest: /opt/trellis
+
+    - name: Install and build mcl
+      shell:
+        cmd: |
+          export CC=gcc{{ gcc_version }}-gcc
+          export CXX=gcc{{ gcc_version }}-c++
+          cd /opt/trellis/crypto/pairing/mcl/scripts
+          ./install_deps.sh
+          export LD_LIBRARY_PATH=/usr/local/lib
+      args:
+        executable: /bin/bash
+
+    - name: Build go files
+      shell:
+        cmd: |
+          export PATH=$PATH:/usr/local/go/bin:/usr/local/cmake-{{ cmake_version }}-linux-x86_64/bin
+          cd /opt/trellis/cmd/server
+          go install && go build
+          cd ../client
+          go install && go build
+          cd ../coordinator
+          go install && go build
+      args:
+        executable: /bin/bash
+
+    - name: Print message for running locally
+      debug:
+        msg: "You can now run Trellis locally using the 'coordinator' command as described in the instructions."
+...

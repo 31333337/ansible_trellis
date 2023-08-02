@@ -1,0 +1,18 @@
+- name: Check CPU and OS Information
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: Gather CPU and OS information
+      setup:
+        filter: ansible_architecture,ansible_os_family
+      register: system_info
+
+    - name: Set facts for CPU and OS
+      set_fact:
+        cpu_arch: "{{ system_info['ansible_facts']['ansible_architecture'] }}"
+        os_family: "{{ system_info['ansible_facts']['ansible_os_family'] }}"
+
+    - name: Print CPU and OS information
+      debug:
+        msg: "CPU Architecture: {{ cpu_arch }}, OS Family: {{ os_family }}"
+

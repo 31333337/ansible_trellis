@@ -1,0 +1,58 @@
+- hosts: localhost
+  become: yes
+  vars:
+    go_version: "1.17.3"
+    cmake_version: "3.22.0-rc2"
+    trellis_repo: "git@github.com:SimonLangowski/trellis"
+    gcc_version: "10"
+- name: Install Trellis on macOS M1
+  hosts: localhost
+  gather_facts: no
+  become: no
+  vars:
+    go_version: "1.17.3"
+    trellis_repo: "git@github.com:SimonLangowski/trellis"
+  tasks:
+    - name: Install required dependencies
+      homebrew:
+        name:
+          - git
+          - go@{{ go_version }}
+          - cmake
+        state: present
+
+    # Clone, build, and other tasks can be similar to the Linux playbook
+    # Adjust paths and commands as needed for macOS
+
+    - name: Clone the Trellis repository
+      git:
+        repo: "{{ trellis_repo }}"
+        dest: /opt/trellis
+
+    - name: Install and build mcl
+      shell:
+        cmd: |
+          cd /opt/trellis/crypto/pairing/mcl/scripts
+          ./install_deps.sh
+          export LD_LIBRARY_PATH=/usr/local/lib
+      args:
+        executable: /bin/bash
+
+    - name: Build go files
+      shell:
+        cmd: |
+          export PATH=$PATH:/usr/local/go/bin:/usr/local/cmake-{{ cmake_version }}-linux-aarch64/bin
+          cd /opt/trellis/cmd/server
+          go install && go build
+          cd ../client
+          go install && go build
+          cd ../coordinator
+          go install && go build
+      args:
+        executable: /bin/bash
+
+    - name: Print message for running locally
+      debug:
+        msg: "You can now run Trellis locally using the 'coordinator' command as described in the instructions."
+...
+

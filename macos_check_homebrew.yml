@@ -1,0 +1,16 @@
+- name: Install Homebrew on macOS M1 if not installed
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Check if macOS and M1
+      when: cpu_arch == 'aarch64' and os_family == 'Darwin'
+      block:
+        - name: Check if Homebrew is installed
+          command: "brew --version"
+          register: brew_installed
+          failed_when: false
+
+        - name: Install Homebrew
+          command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          when: brew_installed.rc != 0
+
