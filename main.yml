@@ -1,8 +1,8 @@
 - import_playbook: check_cpu_and_os.yml
 - import_playbook: install_homebrew_on_macos_m1.yml
-  when: cpu_arch == 'aarch64' and os_family == 'Darwin'
+  when: cpu_arch == 'arm64' and os_family == 'Darwin'
 - import_playbook: install_trellis_on_macos_m1.yml
-  when: cpu_arch == 'aarch64' and os_family == 'Darwin'
+  when: cpu_arch == 'arm64' and os_family == 'Darwin'
 
 - import_playbook: install_trellis_on_debian_x86.yml
   when: cpu_arch == 'x86_64' and os_family == 'Debian'

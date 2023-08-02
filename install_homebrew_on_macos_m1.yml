@@ -1,5 +1,5 @@
 - name: Install Homebrew on macOS M1 if not installed
-  hosts: localhost
+  hosts: all
   gather_facts: no
   tasks:
     - name: Check if macOS and M1

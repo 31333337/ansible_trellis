@@ -1,5 +1,5 @@
 - name: Check CPU and OS Information
-  hosts: localhost
+  hosts: all
   gather_facts: yes
   tasks:
     - name: Gather CPU and OS information
