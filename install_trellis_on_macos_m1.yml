@@ -19,6 +19,7 @@
           - git
           - go@{{ go_version }}
           - cmake
+          - gmp
         state: present
 
     # Clone, build, and other tasks can be similar to the Linux playbook
