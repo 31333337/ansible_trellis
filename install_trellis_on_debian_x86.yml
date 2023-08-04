@@ -25,6 +25,7 @@
           wget https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
           tar -C /usr/local -xzf go{{ go_version }}.linux-amd64.tar.gz
           rm go{{ go_version }}.linux-amd64.tar.gz
+          export PATH=$PATH:/usr/local/go/bin
       args:
         creates: /usr/local/go
 
