@@ -1,18 +1,19 @@
 - name: Install Trellis on Debian x86
-  hosts: localhost
+  hosts: all
   become: yes
+  gather_facts: yes
   vars:
     go_version: "1.17.3"
     cmake_version: "3.22.0-rc2"
-    trellis_repo: "git@github.com:SimonLangowski/trellis"
+    trellis_repo: "https://github.com/SimonLangowski/trellis"
     gcc_version: "10"
   tasks:
     - name: Install required dependencies
       apt:
         name:
           - git
-          - gcc-{{ gcc_version }}
-          - g++-{{ gcc_version }}
+          - gcc
+          - g++
           - cmake
           - libgmp-dev
           - libssl-dev
@@ -44,14 +45,14 @@
     - name: Install and build mcl
       shell:
         cmd: |
-          export CC=gcc{{ gcc_version }}-gcc
-          export CXX=gcc{{ gcc_version }}-c++
-          cd /opt/trellis/crypto/pairing/mcl/scripts
-          ./install_deps.sh
+          cd /opt/trellis/crypto/pairing/mcl/scripts && pwd && ./install-deps.sh 
           export LD_LIBRARY_PATH=/usr/local/lib
       args:
         executable: /bin/bash
-
+    - name: tell that it is gonna be alright! 
+      debug:
+        msg: "LOOKIN' GOD DAWG !!!"
+          
     - name: Build go files
       shell:
         cmd: |
