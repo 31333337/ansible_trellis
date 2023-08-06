@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trellis-app-deployment
+spec:
+  replicas: 1024
+  selector:
+    matchLabels:
+      app: trellis-app
+  template:
+    metadata:
+      labels:
+        app: trellis-app
+    spec:
+      containers:
+      - name: trellis-app-container
+        image: 0KN/trellis-app:latest
