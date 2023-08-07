@@ -1,6 +1,11 @@
 # Ansible plays for Trellis
 
+Main purpose of this repository is to replicate the results from an amazing paper _**Trellis: Robust and Scalable Metadata-private Anonymous Broadcast**_ that you can read [here](https://eprint.iacr.org/2022/1548.pdf) Authored by _Simon Langowski et al. _ 
+
+
 This is a really hacky and basic automated build that currently works on GNU/Linux.
+
+
 
 ## Requirements
 - ansible >= [core 2.15.0]
